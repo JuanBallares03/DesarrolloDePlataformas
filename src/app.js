@@ -24,9 +24,22 @@ const Tipo_docRoutes = require("./routes/tipo_documentos.routes")
 const Tipo_turRoutes = require("./routes/tipo_turismos.routes")
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
+
+// CORS para permitir conexiones desde el frontend
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-access-token');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 // Prefijo de la API montaje de las rutas
 app.use("/api/calificaciones", calificacionesRoutes);
@@ -51,6 +64,8 @@ app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/viajes", viajeRoutes);
 app.use("/api/tipo_turismos ", Tipo_turRoutes);
 app.use('/auth', authRoutes);
+
+app.use(express.static('public'));
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

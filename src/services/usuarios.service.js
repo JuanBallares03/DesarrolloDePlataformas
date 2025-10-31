@@ -62,6 +62,30 @@ class UsuariosService {
         const [result] = await this.db.execute('DELETE FROM usuarios WHERE id_usuario = ?', [id_usuario]);
         return result.affectedRows > 0;
     }
+        async updateVerificationToken(email, token) {
+        const [result] = await this.db.execute(
+            'UPDATE usuarios SET verification_token = ? WHERE Correo_electronico = ?',
+            [token, email]
+        );
+        return result.affectedRows > 0;
+    }
+
+    async findByVerificationToken(token) {
+        const [rows] = await this.db.execute(
+            'SELECT * FROM usuarios WHERE verification_token = ?',
+            [token]
+        );
+        return rows[0];
+    }
+
+    async markEmailAsVerified(email) {
+        const [result] = await this.db.execute(
+            'UPDATE usuarios SET email_verified = TRUE, verification_token = NULL WHERE Correo_electronico = ?',
+            [email]
+        );
+        return result.affectedRows > 0;
+    }
+
 }
 
 // buscar usuario por correo
